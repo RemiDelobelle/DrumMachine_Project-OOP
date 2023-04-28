@@ -21,7 +21,7 @@ namespace DrumMachine_Project_OOP
         public virtual void Play()
         {
             if (soundPlayer.PlaybackState is PlaybackState.Playing)
-                soundPlayer.Play();
+                soundPlayer.Stop();
             instrument.CurrentTime = new TimeSpan(0L); //L-suffix = long //mag ook: '0' //eenheid in ticks: 10,000 ticks = 1 sec
             soundPlayer.Play();
         }

@@ -14,7 +14,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Media;
 using System.Linq;
-using DrumMachine;
+//using DrumMachine;
+using System.Windows.Threading;
 
 namespace DrumMachine_Project_OOP
 {
@@ -29,29 +30,51 @@ namespace DrumMachine_Project_OOP
         int[] kickMem = new int[16];
 
         int msWait = 150; //100bpm = 1.67bps ~= 417ms
-        bool loopActive = false;
-        Timer timerLoop = new Timer();
 
         Instrument _crash = new Instrument("Crash.Wav");
         Instrument _hihat = new Instrument("Hihat.wav");
         Instrument _snare = new Instrument("Snare.Wav");
         Instrument _kick = new Instrument("Kick.Wav");
 
-        MultimediaTimer timer = new MultimediaTimer();
+        int _i = 0;
+        DispatcherTimer _dispatcherTimer;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            timerLoop.Interval = msWait;
+            _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+            _dispatcherTimer.Tick += _dispatcherTimer_Tick;
+        }
+
+        private void _dispatcherTimer_Tick(object? sender, EventArgs e)
+        {
+            if (crashMem[_i] == 1)
+                _crash.Play();
+
+            if (hihatMem[_i] == 1)
+                _hihat.Play();
+
+            if (snareMem[_i] == 1)
+                _snare.Play();
+
+            if (kickMem[_i] == 1)
+                _kick.Play();
+             
+            _i++;
+            if(_i == 16)
+                _i = 0;   
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-
         }
 
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
+            _dispatcherTimer.Start();
+
             ////BELANGRIJK
             ////Bij Timer: gebruik 'Priority.Normal' voor hogere precisie
             ////BELANGRIJK
@@ -138,59 +161,47 @@ namespace DrumMachine_Project_OOP
 
 
 
-            loopActive = true;
-            int i = 0;
-            Stopwatch stopwatch = new Stopwatch();
-            timer.Interval = msWait;
-            timer.Start();
-            timer.Elapsed += (sender, e) =>
-            {
-                stopwatch.Start();
-                if (i < crashMem.Length)
-                {
-                    Parallel.ForEach(Enumerable.Range(0, 4), (index) =>
-                    {
-                        if (crashMem[i] == 1 && index == 0)
-                        {
-                            _crash.Play();
-                        }
-                        if (hihatMem[i] == 1 && index == 1)
-                        {
-                            _hihat.Play();
-                        }
-                        if (snareMem[i] == 1 && index == 2)
-                        {
-                            _snare.Play();
-                        }
-                        if (kickMem[i] == 1 && index == 3)
-                        {
-                            _kick.Play();
-                        }
-                    });
-                    i++;
-                }
-                else
-                {
-                    i = 0;
-                }
-                stopwatch.Stop();
-                int elapsedMs = (int)stopwatch.Elapsed.TotalMilliseconds;
-                int remainingMs = msWait - elapsedMs;
-                if (remainingMs > 0)
-                {
-                    Stopwatch s = new Stopwatch();
-                    s.Start();
-                    while (s.ElapsedMilliseconds < remainingMs)
-                    { }
-                    s.Reset();
-                }
-                stopwatch.Reset();
-            };
+            //loopActive = true;
+            //int i = 0;
+            //Stopwatch stopwatch = new Stopwatch();
+            //timer.Interval = msWait;
+            //timer.Start();
+            //timer.Elapsed += (sender, e) =>
+            //{
+            //    stopwatch.Start();
+            //    if (i < crashMem.Length)
+            //    {
+            //        Parallel.ForEach(Enumerable.Range(0, 4), (index) =>
+            //        {
+            //            if (crashMem[i] == 1 && index == 0)
+            //            {
+            //                _crash.Play();
+            //            }
+            //            if (hihatMem[i] == 1 && index == 1)
+            //            {
+            //                _hihat.Play();
+            //            }
+            //            if (snareMem[i] == 1 && index == 2)
+            //            {
+            //                _snare.Play();
+            //            }
+            //            if (kickMem[i] == 1 && index == 3)
+            //            {
+            //                _kick.Play();
+            //            }
+            //        });
+            //        i++;
+            //    }
+            //    else
+            //    {
+            //        i = 0;
+            //    }
+            //};
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            
+            _dispatcherTimer.Stop();
         }
 
         private void btnCrash_Click(object sender, RoutedEventArgs e)
@@ -234,6 +245,7 @@ namespace DrumMachine_Project_OOP
             }
             //Debug.WriteLine(index + "[" + hihat[index].ToString() + "]");
         }
+
         private void btnSnare_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
@@ -254,6 +266,7 @@ namespace DrumMachine_Project_OOP
             }
             //Debug.WriteLine(index + "[" + snare[index].ToString() + "]");
         }
+
         private void btnKick_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
