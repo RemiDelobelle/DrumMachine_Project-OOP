@@ -28,7 +28,7 @@ namespace DrumMachine_Project_OOP
         int[] snareMem = new int[16];
         int[] kickMem = new int[16];
 
-        int msWait = 417; //100bpm = 1.67bps ~= 417ms
+        int msWait = 150; //100bpm = 1.67bps ~= 417ms
         bool loopActive = false;
         Timer timerLoop = new Timer();
 
