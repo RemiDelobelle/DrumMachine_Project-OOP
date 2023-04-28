@@ -10,6 +10,11 @@ using System.Threading;
 using System.Timers;
 using System.Diagnostics;
 using Timer = System.Timers.Timer;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Media;
+using System.Linq;
+using DrumMachine;
 
 namespace DrumMachine_Project_OOP
 {
@@ -31,6 +36,8 @@ namespace DrumMachine_Project_OOP
         Instrument _hihat = new Instrument("Hihat.wav");
         Instrument _snare = new Instrument("Snare.Wav");
         Instrument _kick = new Instrument("Kick.Wav");
+
+        MultimediaTimer timer = new MultimediaTimer();
         public MainWindow()
         {
             InitializeComponent();
@@ -45,98 +52,145 @@ namespace DrumMachine_Project_OOP
 
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
-            //BELANGRIJK
-            //Bij Timer: gebruik 'Priority.Normal' voor hogere precisie
-            //BELANGRIJK
+            ////BELANGRIJK
+            ////Bij Timer: gebruik 'Priority.Normal' voor hogere precisie
+            ////BELANGRIJK
+            //int i = 0;
+            //Stopwatch stopwatch = new Stopwatch(); // use higher precision timer
+            //Timer timer = new Timer(msWait);
+            //timer.Elapsed += (sender, e) =>
+            //{
+            //    while (true) // repeat infinitely
+            //    {
+            //        stopwatch.Start(); // start the timer
+            //        if (i < crashMem.Length)
+            //        {
+            //            if (crashMem[i] == 1)
+            //            {
+            //                Thread t = new Thread(() => _crash.Play());
+            //                t.Start();
+            //            }
+            //            if (hihatMem[i] == 1)
+            //            {
+            //                Thread t = new Thread(() => _hihat.Play());
+            //                t.Start();
+            //            }
+            //            if (i < snareMem.Length && snareMem[i] == 1)
+            //            {
+            //                Thread t = new Thread(() => _snare.Play());
+            //                t.Start();
+            //            }
+            //            if (kickMem[i] == 1)
+            //            {
+            //                Thread t = new Thread(() => _kick.Play());
+            //                t.Start();
+            //            }
+            //            i++;
+            //        }
+            //        else
+            //        {
+            //            i = 0;
+            //        }
+            //        stopwatch.Stop(); // stop the timer
+            //        int elapsedMs = (int)stopwatch.Elapsed.TotalMilliseconds; // calculate elapsed time
+            //        int remainingMs = msWait - elapsedMs; // calculate remaining time
+            //        if (remainingMs > 0)
+            //        {
+            //            Thread.Sleep(remainingMs); // wait for the remaining time
+            //        }
+            //        stopwatch.Reset(); // reset the timer
+            //    }
+            //};
+            //timer.Start();
+
+            //loopActive = true;
+            //int i = 0;
+            //Stopwatch stopwatch = new Stopwatch();
+            //MultimediaTimer timer = new MultimediaTimer();
+            //timer.Interval = msWait;
+            //timer.Start();
+            //while (loopActive)
+            //{
+            //    timer.Elapsed += (sender, e) =>
+            //    {
+            //        if (crashMem[i] == 1)
+            //        {
+            //            Task.Run(() => _crash.Play());
+            //        }
+            //        if (hihatMem[i] == 1)
+            //        {
+            //            Task.Run(() => _hihat.Play());
+            //        }
+            //        if (i < snareMem.Length && snareMem[i] == 1)
+            //        {
+            //            Task.Run(() => _snare.Play());
+            //        }
+            //        if (kickMem[i] == 1)
+            //        {
+            //            Task.Run(() => _kick.Play());
+            //        }
+            //        i++;
+            //        if (i >= crashMem.Length)
+            //            i = 0;
+            //    };
+            //}
+            //timer.Stop();
+
+
+
+            loopActive = true;
             int i = 0;
-            Stopwatch stopwatch = new Stopwatch(); // use higher precision timer
-            Timer timer = new Timer(msWait);
+            Stopwatch stopwatch = new Stopwatch();
+            timer.Interval = msWait;
+            timer.Start();
             timer.Elapsed += (sender, e) =>
             {
-                while (true) // repeat infinitely
+                stopwatch.Start();
+                if (i < crashMem.Length)
                 {
-                    stopwatch.Start(); // start the timer
-                    if (i < crashMem.Length)
+                    Parallel.ForEach(Enumerable.Range(0, 4), (index) =>
                     {
-                        if (crashMem[i] == 1)
+                        if (crashMem[i] == 1 && index == 0)
                         {
-                            Thread t = new Thread(() => _crash.Play());
-                            t.Start();
+                            _crash.Play();
                         }
-                        if (hihatMem[i] == 1)
+                        if (hihatMem[i] == 1 && index == 1)
                         {
-                            Thread t = new Thread(() => _hihat.Play());
-                            t.Start();
+                            _hihat.Play();
                         }
-                        if (i < snareMem.Length && snareMem[i] == 1)
+                        if (snareMem[i] == 1 && index == 2)
                         {
-                            Thread t = new Thread(() => _snare.Play());
-                            t.Start();
+                            _snare.Play();
                         }
-                        if (kickMem[i] == 1)
+                        if (kickMem[i] == 1 && index == 3)
                         {
-                            Thread t = new Thread(() => _kick.Play());
-                            t.Start();
+                            _kick.Play();
                         }
-                        i++;
-                    }
-                    else
-                    {
-                        i = 0;
-                    }
-                    stopwatch.Stop(); // stop the timer
-                    int elapsedMs = (int)stopwatch.Elapsed.TotalMilliseconds; // calculate elapsed time
-                    int remainingMs = msWait - elapsedMs; // calculate remaining time
-                    if (remainingMs > 0)
-                    {
-                        Thread.Sleep(remainingMs); // wait for the remaining time
-                    }
-                    stopwatch.Reset(); // reset the timer
+                    });
+                    i++;
                 }
+                else
+                {
+                    i = 0;
+                }
+                stopwatch.Stop();
+                int elapsedMs = (int)stopwatch.Elapsed.TotalMilliseconds;
+                int remainingMs = msWait - elapsedMs;
+                if (remainingMs > 0)
+                {
+                    Stopwatch s = new Stopwatch();
+                    s.Start();
+                    while (s.ElapsedMilliseconds < remainingMs)
+                    { }
+                    s.Reset();
+                }
+                stopwatch.Reset();
             };
-            timer.Start();
-
-            //if (loopActive == false)
-            //{
-            //    loopActive = true;
-            //    timerLoop.Start();
-            //    btnPlay.IsEnabled = false;
-            //    btnStop.IsEnabled = true;
-            //}
-
-
-            //timerLoop.Start();
-
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            //if (loopActive == true)
-            //{
-            //    loopActive = false;
-            //    timerLoop.Stop();
-            //    timerLoop.Dispose();
-            //    btnPlay.IsEnabled = true;
-            //    btnStop.IsEnabled = false;
-            //}
-
-            //timerLoop.Stop();
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            //for (int i = 0; i < crashMem.Length; i++)
-            //{
-            //    if (crashMem[i] == 1)
-            //        _crash.Play();
-            //    if (hihatMem[i] == 1)
-            //        _hihat.Play();
-            //    if (snareMem[i] == 1)
-            //        _snare.Play();
-            //    if (kickMem[i] == 1)
-            //        _kick.Play();
-            //}
-
+            
         }
 
         private void btnCrash_Click(object sender, RoutedEventArgs e)
