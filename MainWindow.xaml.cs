@@ -20,6 +20,7 @@ using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 //using Newtonsoft.Json;
 
 namespace DrumMachine_Project_OOP
@@ -42,7 +43,8 @@ namespace DrumMachine_Project_OOP
 
         int _i = 0;
         DispatcherTimer _dispatcherTimer;
-        const int msWait = 150; //100bpm = 1.67bps ~= 417ms
+        int bpm = 100;
+        int msWait = 150; //150ms tussen elke noot
 
         List<Button> soundBtnList = new List<Button>(); //Soudnbtns list
         List<Button> antiBtnList = new List<Button>();  //De rest
@@ -51,9 +53,10 @@ namespace DrumMachine_Project_OOP
         {
             InitializeComponent();
 
+            FormulaMsWait(bpm);
             _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
-            _dispatcherTimer.Tick += _dispatcherTimer_Tick;         
+            _dispatcherTimer.Tick += _dispatcherTimer_Tick;
         }
 
         private void _dispatcherTimer_Tick(object? sender, EventArgs e)     //loop sounds
@@ -85,6 +88,8 @@ namespace DrumMachine_Project_OOP
                 btnStop,
                 btnClear,
                 btnSave,
+                btnTempoUp,
+                btnTempoDown
             });
             Debug.WriteLine("Buttons in antiBtnList:");
             foreach (Button item in antiBtnList)
@@ -347,6 +352,51 @@ namespace DrumMachine_Project_OOP
             // Save the JSON to a file
             File.WriteAllText(filename, json);
             Console.WriteLine("JSON data saved to file: " + filename);
+        }
+
+        private void txtBxTempo_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!int.TryParse(e.Text, out int numericValue))
+            {
+                e.Handled = true; // Prevent the invalid text from being entered
+            }
+        }
+
+        private void txtBxTempo_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(txtBxTempo.Text, out int newValue))
+            {
+                bpm = newValue;
+                FormulaMsWait(bpm);
+                if (_dispatcherTimer != null)
+                {
+                    _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+                }
+            }
+        }
+
+        private void btnTempoUp_Click(object sender, RoutedEventArgs e)
+        {
+            bpm++;
+            FormulaMsWait(bpm);
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+            txtBxTempo.Text = bpm.ToString();
+        }
+
+        private void btnTempoDown_Click(object sender, RoutedEventArgs e)
+        {
+            bpm--;
+            FormulaMsWait(bpm);
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+            txtBxTempo.Text = bpm.ToString();
+        }
+
+        private void FormulaMsWait(int bpm)
+        {
+            double msWaitDouble = (60 * 1000) / (bpm * 4);
+            msWait = (int)Math.Round(msWaitDouble);
+            //100bpm --> 400noten/min --> 6.67noten/s
+            //t = (1/6.67)*1000 ms
         }
 
 

@@ -11,6 +11,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"></ColumnDefinition>
@@ -27,10 +29,21 @@
             <Button x:Name="btnStop" Content="Stop" Grid.Row="1" Grid.Column="1" Margin="10, 5, 10, 5" Click="btnStop_Click"></Button>
             <Button x:Name="btnClear" Content="Clear" Grid.Row="1" Grid.Column="2" Margin="10, 5, 10, 5" Click="btnClear_Click"></Button>
             <Button x:Name="btnSave" Content="Save" Grid.Row="1" Grid.Column="3" Margin="10, 5, 10, 5" Click="btnSave_Click"></Button>
+            <Label Name="lblTempo" Content="Tempo:" Grid.Row="2" Grid.RowSpan="2" Grid.Column="0" Margin="10, 5, 10, 5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" ></Label>
+            <TextBox x:Name="txtBxTempo" Text="100" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Margin="10, 5, 10, 5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" PreviewTextInput="txtBxTempo_PreviewTextInput" TextChanged="txtBxTempo_TextChanged"></TextBox>
+            <Button x:Name="btnTempoUp" Content="^" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Width="15" HorizontalAlignment="Center" Click="btnTempoUp_Click"></Button>
+            <Button x:Name="btnTempoDown" Content="^" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Width="15" HorizontalAlignment="Center" Click="btnTempoDown_Click">
+                <Button.RenderTransformOrigin>
+                    <Point X="0.5" Y="0.5" />
+                </Button.RenderTransformOrigin>
+                <Button.RenderTransform>
+                    <RotateTransform Angle="180" />
+                </Button.RenderTransform>
+            </Button>
 
         </Grid>
 
-        <Grid  Margin="10, 110, 10, 10">
+        <Grid  Margin="10, 150, 10, 10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
