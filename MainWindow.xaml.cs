@@ -19,6 +19,7 @@ using Microsoft.Win32;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Reflection;
 //using Newtonsoft.Json;
 
 namespace DrumMachine_Project_OOP
@@ -33,18 +34,18 @@ namespace DrumMachine_Project_OOP
         int[] snareMem = new int[16];
         int[] kickMem = new int[16];
 
-        int msWait = 150; //100bpm = 1.67bps ~= 417ms
-
         Instrument _crash = new Instrument("Crash.Wav");
         Instrument _hihat = new Instrument("Hihat.wav");
         Instrument _snare = new Instrument("Snare.Wav");
         Instrument _kick = new Instrument("Kick.Wav");
+        const int _amountInstruments = 4;
 
         int _i = 0;
         DispatcherTimer _dispatcherTimer;
+        const int msWait = 150; //100bpm = 1.67bps ~= 417ms
 
-        List<Button> soundBtnList = new List<Button>();
-        List<Button> antiBtnList = new List<Button>();
+        List<Button> soundBtnList = new List<Button>(); //Soudnbtns list
+        List<Button> antiBtnList = new List<Button>();  //De rest
 
         public MainWindow()
         {
@@ -52,22 +53,10 @@ namespace DrumMachine_Project_OOP
 
             _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
-            _dispatcherTimer.Tick += _dispatcherTimer_Tick;
-
-            antiBtnList.AddRange(new[]
-            {
-                btnChoose,
-                btnLoad,
-                btnPlay,
-                btnStop,
-                btnClear,
-                btnSave,                
-            });
-            foreach (Button item in antiBtnList)
-            {   Debug.WriteLine(item.Name);     }
+            _dispatcherTimer.Tick += _dispatcherTimer_Tick;         
         }
 
-        private void _dispatcherTimer_Tick(object? sender, EventArgs e)
+        private void _dispatcherTimer_Tick(object? sender, EventArgs e)     //loop sounds
         {
             if (crashMem[_i] == 1)
                 _crash.Play();
@@ -86,100 +75,29 @@ namespace DrumMachine_Project_OOP
                 _i = 0;   
         }
 
-        //private void Window_KeyDown(object sender, KeyEventArgs e)
-        //{
-
-        //}
-
-        private void btnChoose_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "JSON Files (*.json)|*.json";
-
-            if (openFileDialog.ShowDialog() == true)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {           
+            antiBtnList.AddRange(new[]
             {
-                txtBxFilePath.Text = openFileDialog.FileName;
-            }
-        }
+                btnChoose,
+                btnLoad,
+                btnPlay,
+                btnStop,
+                btnClear,
+                btnSave,
+            });
+            Debug.WriteLine("Buttons in antiBtnList:");
+            foreach (Button item in antiBtnList)
+            {   Debug.WriteLine(item.Name);    }
 
-        private void btnLoad_Click(object sender, RoutedEventArgs e)
-        {
-            string filePath = txtBxFilePath.Text;
-
-            try
-            {
-                string fileContent = File.ReadAllText(filePath);
-                SaveArrays(filePath);
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show("The selected file does not exist.", "File Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while processing the file: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        private void SaveArrays(string filePath)
-        {
-            string json = File.ReadAllText(filePath);
-
-            JArray jsonArray = JArray.Parse(json);
-
-            // Extract the arrays
-            try
-            {
-                crashMem = jsonArray[0]?.ToObject<int[]>() ?? throw NullArrayExc(nameof(crashMem));
-                hihatMem = jsonArray[1]?.ToObject<int[]>() ?? throw NullArrayExc(nameof(hihatMem));
-                snareMem = jsonArray[2]?.ToObject<int[]>() ?? throw NullArrayExc(nameof(snareMem)); 
-                kickMem = jsonArray[3]?.ToObject<int[]>() ?? throw NullArrayExc(nameof(kickMem));
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show($"Invalid JSON-file, {ex.Message}", "Error in Array");
-            }
-            DebugNow();
-        }
-        private InvalidOperationException NullArrayExc(string arrayName)
-        {
-            return new InvalidOperationException($"Array '{arrayName}' is null.");
-        }
-
-
-        private void btnPlay_Click(object sender, RoutedEventArgs e)
-        {
-            _dispatcherTimer.Start();
-        }
-
-        private void btnStop_Click(object sender, RoutedEventArgs e)
-        {
-            _dispatcherTimer.Stop();
-        }
-
-        private void btnClear_Click(object sender, RoutedEventArgs e)
-        {
-            soundBtnList.Clear();
-
-            // Find all the buttons in the visual tree except for the specific ones
             FindButtons(this, soundBtnList);
-
-            Array.Clear(crashMem, 0, crashMem.Length);
-            Array.Clear(hihatMem, 0, hihatMem.Length);
-            Array.Clear(snareMem, 0, snareMem.Length);
-            Array.Clear(kickMem, 0, kickMem.Length);
-
+            Debug.WriteLine("\nButtons in soundBtnList:");
             foreach (Button button in soundBtnList)
-            {
-                button.Background = Brushes.LightGray;
-            }
-
-            for (int i = 0; i < soundBtnList.Count - 1; i += 4)
-            {
-                SetDarkGrayBackground(soundBtnList, i);
-            }
+            {   Debug.WriteLine(button.Name);    }
+            Debug.WriteLine("");
+            DebugArrays();
         }
-
-        private void FindButtons(DependencyObject parent, List<Button> soundBtnList)
+        private void FindButtons(DependencyObject parent, List<Button> soundBtnList)    //Add all soundBtns aan de list
         {
             int count = VisualTreeHelper.GetChildrenCount(parent);
             for (int i = 0; i < count; i++)
@@ -197,18 +115,217 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void SetDarkGrayBackground(List<Button> buttonList, int index)
+        private void btnChoose_Click(object sender, RoutedEventArgs e)     //File kiezen om in te laden
         {
-            if (index >= 0 && index < buttonList.Count)
+            Debug.WriteLine("btnChoose clicked");
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "JSON Files (*.json)|*.json";
+
+            if (openFileDialog.ShowDialog() == true)
             {
-                Button button = buttonList[index];
-                button.Background = new SolidColorBrush(Color.FromRgb(0xA9, 0xA9, 0xA9));
+                txtBxFilePath.Text = openFileDialog.FileName;
+                Debug.WriteLine("FilePath success\n");
             }
         }
 
-
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        private void btnLoad_Click(object sender, RoutedEventArgs e)       //File inladen + Json omzetten naar array's
         {
+            Debug.WriteLine("btnLoad clicked");
+            if (crashMem != null || hihatMem != null || snareMem != null || kickMem != null)
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    Debug.WriteLine("Load Event canceled\n");
+                    return;                    
+                }
+            }
+
+            string filePath = txtBxFilePath.Text;
+
+            try
+            {
+                string fileContent = File.ReadAllText(filePath);
+                ConvertJsonToArrays(filePath);
+                VisualizerSoundBtns();
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show("The selected file does not exist." + ex.Message, "File Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while processing the file: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ConvertJsonToArrays(string filePath)                        //JSON lezen omzetten naar arrays
+        {
+            string json = File.ReadAllText(filePath);
+            Debug.WriteLine("Json converted to string");
+
+            try
+            {
+                JArray jsonArray = JArray.Parse(json);
+
+                if (jsonArray.Count < _amountInstruments)                                                                                                       //Verander var als uitbreiden
+                {
+                    MessageBox.Show("Invalid JSON file: Missing arrays", "Error");
+                    return;
+                }
+
+                ValidateArray(jsonArray[0], "crashMem");
+                ValidateArray(jsonArray[1], "hihatMem");
+                ValidateArray(jsonArray[2], "snareMem");
+                ValidateArray(jsonArray[3], "kickMem");
+
+                crashMem = jsonArray[0]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'crashMem' is not in the right format.");
+                hihatMem = jsonArray[1]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'hihatMem' is not in the right format.");
+                snareMem = jsonArray[2]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'snareMem' is not in the right format.");
+                kickMem = jsonArray[3]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'kickMem' is not in the right format.");
+                DebugArrays();
+                // Proceed with further processing or operations on the arrays
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show($"Invalid JSON file: {ex.Message}", "Error");
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Incorrect Format", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error occurred during array validation: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private static void ValidateArray(JToken token, string arrayName)
+        {
+            try
+            {
+                if (token == null || token.Type != JTokenType.Array || token.Count() != 16 ||
+                    !token.Values().All(val => val.Type == JTokenType.Integer && (int)val == 0 || (int)val == 1))
+                {
+                    throw new InvalidOperationException($"Array '{arrayName}' is not in the right format.");
+                }
+                Debug.WriteLine("Arrays Validated");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error in validating array '{arrayName}': {ex.Message}");
+            }
+        }
+
+        private void VisualizerSoundBtns()
+        {
+            for (int i = 0; i < crashMem.Length; i++)
+            {
+                if(crashMem[i] == 1)
+                {
+                    Button button = soundBtnList[i];
+                    button.Background = Brushes.LightSkyBlue;                    
+                }
+            }
+            for (int i = 0; i < hihatMem.Length; i++)
+            {
+                if (hihatMem[i] == 1)
+                {
+                    Button button = soundBtnList[i];
+                    button.Background = Brushes.LightSkyBlue;
+                }
+            }
+            for (int i = 0; i < snareMem.Length; i++)
+            {
+                if (snareMem[i] == 1)
+                {
+                    Button button = soundBtnList[i];
+                    button.Background = Brushes.LightSkyBlue;
+                }
+            }
+            for (int i = 0; i < kickMem.Length; i++)
+            {
+                if (kickMem[i] == 1)
+                {
+                    Button button = soundBtnList[i];
+                    button.Background = Brushes.LightSkyBlue;
+                }
+            }
+            Debug.WriteLine("Buttons correctly colored\n");
+        }
+
+
+        private void btnPlay_Click(object sender, RoutedEventArgs e)        //Start loop
+        {
+            _dispatcherTimer.Start();
+            Debug.WriteLine("btnPlay clicked\n");
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)        //Stop loop
+        {
+            _dispatcherTimer.Stop();
+            _i = 0;
+            Debug.WriteLine("btnStop clicked\n");
+        }
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)       //Verwijder inhoud array's + knoppen naar originele kleur
+        {
+            Debug.WriteLine("btnClear clicked");
+            _dispatcherTimer.Stop();
+            _i = 0;
+
+            if (crashMem != null || hihatMem != null || snareMem != null || kickMem != null)
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    Debug.WriteLine("Load Event canceled\n");
+                    return;
+                }
+            }
+
+            // Find all the buttons in the visual tree except for the specific ones
+            //FindButtons(this, soundBtnList);
+            if (crashMem != null)
+                Array.Clear(crashMem, 0, crashMem.Length);
+            if (hihatMem != null)
+                Array.Clear(hihatMem, 0, hihatMem.Length);
+            if (snareMem != null)
+                Array.Clear(snareMem, 0, snareMem.Length);
+            if (kickMem != null)
+                Array.Clear(kickMem, 0, kickMem.Length);
+            Debug.WriteLine("Arrays cleared");
+
+            foreach (Button button in soundBtnList)
+            {
+                button.Background = Brushes.LightGray;
+            }
+
+            for (int i = 0; i < soundBtnList.Count /*- 1*/; i += 4)
+            {
+                if (i >= 0 && i < soundBtnList.Count)
+                {
+                    Button button = soundBtnList[i];
+                    button.Background = new SolidColorBrush(Color.FromRgb(0xA9, 0xA9, 0xA9));
+                }
+            }
+            Debug.WriteLine("Button colors restored\n");
+        }       
+
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)        //Zet array's om in Json-file + opent venster om locatie te kiezen
+        {
+            Debug.WriteLine("btnSave clicked");
+            if (crashMem == null || hihatMem == null || snareMem == null || kickMem == null)
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to save a empty groove?", "Empty groove", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    Debug.WriteLine("Save Event canceled\n");
+                    return;
+                }
+            }
+
             // Create a SaveFileDialog instance
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "JSON files (*.json)|*.json";
@@ -217,7 +334,8 @@ namespace DrumMachine_Project_OOP
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filename = saveFileDialog.FileName;
-                SaveArraysToJson(new object[] { crashMem, hihatMem, snareMem, kickMem }, filename);
+                SaveArraysToJson(new object[] { crashMem!, hihatMem!, snareMem!, kickMem! }, filename);
+                Debug.WriteLine("Arrays succesfully saved\n");
             }
         }
 
@@ -232,6 +350,7 @@ namespace DrumMachine_Project_OOP
         }
 
 
+        //SoundBtns --> array + achtergroundkleur van knoppen
         private void btnCrash_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
@@ -316,34 +435,50 @@ namespace DrumMachine_Project_OOP
             //Debug.WriteLine(index + "[" + kick[index].ToString() + "]");
         }
 
-        private void DebugNow()
+
+        private void DebugArrays()
         {
+            Debug.WriteLine("");
+
             Debug.Write("crashMem[]: {  ");
+            int lastIndex = crashMem.Length - 1;
+            int counter = 0;
             foreach (var item in crashMem)
             {
                 Debug.Write(item.ToString());
-                Debug.Write($", ");
+                if (counter != lastIndex)
+                { Debug.Write(", ");    }
+                counter++;
             }
             Debug.Write("   }\n");
+            counter = 0;
             Debug.Write("hihatMem[]: {  ");
             foreach (var item in hihatMem)
             {
                 Debug.Write(item.ToString());
-                Debug.Write($", ");
+                if (counter != lastIndex)
+                { Debug.Write(", "); }
+                counter++;
             }
             Debug.Write("   }\n");
+            counter = 0;
             Debug.Write("snareMem[]: {  ");
             foreach (var item in snareMem)
             {
                 Debug.Write(item.ToString());
-                Debug.Write($", ");
+                if (counter != lastIndex)
+                { Debug.Write(", "); }
+                counter++;
             }
             Debug.Write("   }\n");
+            counter = 0;
             Debug.Write("kickMem[]: {  ");
             foreach (var item in kickMem)
             {
                 Debug.Write(item.ToString());
-                Debug.Write($", ");
+                if (counter != lastIndex)
+                { Debug.Write(", "); }
+                counter++;
             }
             Debug.Write("   }\n");
         }
