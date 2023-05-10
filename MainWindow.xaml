@@ -5,21 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DrumMachine_Project_OOP"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" KeyDown="Window_KeyDown" ResizeMode="CanResizeWithGrip">
+        Title="MainWindow" Height="450" Width="800" ResizeMode="CanResizeWithGrip">
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"></ColumnDefinition>
                 <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button x:Name="btnPlay" Content="Play" Grid.Row="0" Grid.Column="0" Margin="10" Click="btnPlay_Click"></Button>
-            <Button x:Name="btnStop" Content="Stop" Grid.Row="0" Grid.Column="1" Margin="10" Click="btnStop_Click"></Button>
+            <Button x:Name="btnChoose" Content="Choose SaveFile" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10, 10, 10, 5" Click="btnChoose_Click"></Button>
+            <TextBox x:Name="txtBxFilePath" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3" Margin="10, 10, 10, 5" IsReadOnly="True"></TextBox>
+            <Button x:Name="btnLoad" Content="Load" Grid.Row="0" Grid.Column="5" Margin="10, 10, 10, 5" Click="btnLoad_Click"></Button>
+            <Button x:Name="btnPlay" Content="Play" Grid.Row="1" Grid.Column="0" Margin="10, 5, 10, 5" Click="btnPlay_Click"></Button>
+            <Button x:Name="btnStop" Content="Stop" Grid.Row="1" Grid.Column="1" Margin="10, 5, 10, 5" Click="btnStop_Click"></Button>
+            <Button x:Name="btnClear" Content="Clear" Grid.Row="1" Grid.Column="2" Margin="10, 5, 10, 5" Click="btnClear_Click"></Button>
+            <Button x:Name="btnSave" Content="Save" Grid.Row="1" Grid.Column="3" Margin="10, 5, 10, 5" Click="btnSave_Click"></Button>
+
         </Grid>
 
-        <Grid  Margin="10, 70, 10, 10">
+        <Grid  Margin="10, 110, 10, 10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
