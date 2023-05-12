@@ -136,13 +136,16 @@ namespace DrumMachine_Project_OOP
         private void btnLoad_Click(object sender, RoutedEventArgs e)       //File inladen + Json omzetten naar array's
         {
             Debug.WriteLine("btnLoad clicked");
-            if (crashMem != null || hihatMem != null || snareMem != null || kickMem != null)
+            if ((crashMem != null && !crashMem.All(val => val == 0)) ||
+                (hihatMem != null && !hihatMem.All(val => val == 0)) ||
+                (snareMem != null && !snareMem.All(val => val == 0)) ||
+                (kickMem != null && !kickMem.All(val => val == 0)))
             {
-                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete the existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel)
                 {
                     Debug.WriteLine("Load Event canceled\n");
-                    return;                    
+                    return;
                 }
             }
 
@@ -236,7 +239,7 @@ namespace DrumMachine_Project_OOP
             {
                 if (hihatMem[i] == 1)
                 {
-                    Button button = soundBtnList[i];
+                    Button button = soundBtnList[16 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -244,7 +247,7 @@ namespace DrumMachine_Project_OOP
             {
                 if (snareMem[i] == 1)
                 {
-                    Button button = soundBtnList[i];
+                    Button button = soundBtnList[32 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -252,7 +255,7 @@ namespace DrumMachine_Project_OOP
             {
                 if (kickMem[i] == 1)
                 {
-                    Button button = soundBtnList[i];
+                    Button button = soundBtnList[48 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -279,7 +282,10 @@ namespace DrumMachine_Project_OOP
             _dispatcherTimer.Stop();
             _i = 0;
 
-            if (crashMem != null || hihatMem != null || snareMem != null || kickMem != null)
+            if ((crashMem != null && !crashMem.All(val => val == 0)) ||
+                (hihatMem != null && !hihatMem.All(val => val == 0)) ||
+                (snareMem != null && !snareMem.All(val => val == 0)) ||
+                (kickMem != null && !kickMem.All(val => val == 0)))
             {
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to delete existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel)
@@ -317,11 +323,13 @@ namespace DrumMachine_Project_OOP
             Debug.WriteLine("Button colors restored\n");
         }       
 
-
         private void btnSave_Click(object sender, RoutedEventArgs e)        //Zet array's om in Json-file + opent venster om locatie te kiezen
         {
             Debug.WriteLine("btnSave clicked");
-            if (crashMem == null || hihatMem == null || snareMem == null || kickMem == null)
+            if ((crashMem == null || crashMem.All(val => val == 0)) &&
+                (hihatMem == null || hihatMem.All(val => val == 0)) &&
+                (snareMem == null || snareMem.All(val => val == 0)) &&
+                (kickMem == null || kickMem.All(val => val == 0)))
             {
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to save a empty groove?", "Empty groove", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel)
@@ -341,6 +349,7 @@ namespace DrumMachine_Project_OOP
                 string filename = saveFileDialog.FileName;
                 SaveArraysToJson(new object[] { crashMem!, hihatMem!, snareMem!, kickMem! }, filename);
                 Debug.WriteLine("Arrays succesfully saved\n");
+                MessageBox.Show("Groove successfully saved!", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -393,10 +402,21 @@ namespace DrumMachine_Project_OOP
 
         private void FormulaMsWait(int bpm)
         {
-            double msWaitDouble = (60 * 1000) / (bpm * 4);
-            msWait = (int)Math.Round(msWaitDouble);
-            //100bpm --> 400noten/min --> 6.67noten/s
-            //t = (1/6.67)*1000 ms
+            try                                                         // FIX DIT NOG NIET AF WERKT NOG NIET HELEMAAL
+            {
+                double msWaitDouble = (60 * 1000) / (bpm * 4);
+                msWait = (int)Math.Round(msWaitDouble);
+                //100bpm --> 400noten/min --> 6.67noten/s
+                //t = (1/6.67)*1000 ms
+            }
+            catch (DivideByZeroException ex)
+            {
+                MessageBox.Show("Bpm kan geen '0' zijn: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Bpm is geen geldige waarde: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
 
