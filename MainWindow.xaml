@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DrumMachine_Project_OOP"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded">
+        Title="MainWindow" Height="450" Width="1500" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded">
+    <!--<Viewbox>-->
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -74,6 +75,26 @@
                 <ColumnDefinition Width="30"></ColumnDefinition>
                 <ColumnDefinition Width="30"></ColumnDefinition>
                 <ColumnDefinition Width="5"></ColumnDefinition>
+                <!--<ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>-->
             </Grid.ColumnDefinitions>
             <Rectangle Grid.Column="1" Grid.RowSpan="5" Width="0.5" Fill="Black"></Rectangle>
             <Rectangle Grid.Column="6" Grid.RowSpan="5" Width="0.5" Fill="Black"></Rectangle>
@@ -107,6 +128,22 @@
             <Button x:Name="btnCrash14" Grid.Row="1" Grid.Column="18" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
             <Button x:Name="btnCrash15" Grid.Row="1" Grid.Column="19" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
             <Button x:Name="btnCrash16" Grid.Row="1" Grid.Column="20" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <!--<Button x:Name="btnCrash17" Grid.Row="1" Grid.Column="22" Margin="3" Background="#A9A9A9" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash18" Grid.Row="1" Grid.Column="23" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash19" Grid.Row="1" Grid.Column="24" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash20" Grid.Row="1" Grid.Column="25" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash21" Grid.Row="1" Grid.Column="27" Margin="3" Background="#A9A9A9" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash22" Grid.Row="1" Grid.Column="28" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash23" Grid.Row="1" Grid.Column="29" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash24" Grid.Row="1" Grid.Column="30" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash25" Grid.Row="1" Grid.Column="32" Margin="3" Background="#A9A9A9" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash26" Grid.Row="1" Grid.Column="33" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash27" Grid.Row="1" Grid.Column="34" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash28" Grid.Row="1" Grid.Column="35" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash29" Grid.Row="1" Grid.Column="37" Margin="3" Background="#A9A9A9" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash30" Grid.Row="1" Grid.Column="38" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash31" Grid.Row="1" Grid.Column="39" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
+            <Button x:Name="btnCrash32" Grid.Row="1" Grid.Column="40" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>-->
 
             <Label Name="lblHihat" Content="Hi-Hat" Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
             <Button x:Name="btnHihat1" Grid.Row="2" Grid.Column="2" Margin="3" Background="#A9A9A9" Click="btnHihat_Click"></Button>
@@ -163,4 +200,5 @@
             <Button x:Name="btnKick16" Grid.Row="4" Grid.Column="20" Margin="3" Background="lightGray" Click="btnKick_Click"></Button>
         </Grid>
     </Grid>
+    <!--</Viewbox>-->
 </Window>

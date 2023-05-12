@@ -196,7 +196,7 @@ namespace DrumMachine_Project_OOP
             }
             catch (JsonException ex)
             {
-                MessageBox.Show($"Invalid JSON file: {ex.Message}", "Error");
+                MessageBox.Show($"Invalid JSON file :{ex.Message}", "Error");
             }
             catch (InvalidOperationException ex)
             {
@@ -204,7 +204,7 @@ namespace DrumMachine_Project_OOP
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error occurred during array validation: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error occurred during array validation :{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -347,7 +347,7 @@ namespace DrumMachine_Project_OOP
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filename = saveFileDialog.FileName;
-                SaveArraysToJson(new object[] { crashMem!, hihatMem!, snareMem!, kickMem! }, filename);
+                SaveArraysToJson(new object[] { crashMem!, hihatMem!, snareMem!, kickMem! }/*, bpm*/, filename);
                 Debug.WriteLine("Arrays succesfully saved\n");
                 MessageBox.Show("Groove successfully saved!", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -358,10 +358,22 @@ namespace DrumMachine_Project_OOP
             // Convert the arrays to JSON format
             string json = JsonSerializer.Serialize(arrays, new JsonSerializerOptions { WriteIndented = true });
 
-            // Save the JSON to a file
             File.WriteAllText(filename, json);
             Console.WriteLine("JSON data saved to file: " + filename);
         }
+        //static void SaveArraysToJson(int[][] arrays/*, int bpm*/, string filename)
+        //{
+        //    GrooveData groovedata = new GrooveData
+        //    {
+        //        //Bpm = bpm,
+        //        Arrays = arrays
+        //    };
+
+        //    string json = JsonSerializer.Serialize(groovedata, new JsonSerializerOptions { WriteIndented = true });
+        //    File.WriteAllText(filename, json);
+        //    Console.WriteLine("JSON data saved to file: " + filename);
+        //}
+
 
         private void txtBxTempo_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -386,18 +398,45 @@ namespace DrumMachine_Project_OOP
 
         private void btnTempoUp_Click(object sender, RoutedEventArgs e)
         {
-            bpm++;
-            FormulaMsWait(bpm);
-            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
-            txtBxTempo.Text = bpm.ToString();
+            try
+            {
+                bpm++;
+                FormulaMsWait(bpm);
+                _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+                txtBxTempo.Text = bpm.ToString();
+            }
+            catch (Exception ex)
+            {
+                bpm = 1;
+                _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+                txtBxTempo.Text = bpm.ToString();
+                MessageBox.Show("Bpm is no valid value: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btnTempoDown_Click(object sender, RoutedEventArgs e)
         {
-            bpm--;
-            FormulaMsWait(bpm);
-            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
-            txtBxTempo.Text = bpm.ToString();
+            try
+            {
+                bpm--;
+                FormulaMsWait(bpm);
+                _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+                txtBxTempo.Text = bpm.ToString();
+            }
+            catch (DivideByZeroException ex)
+            {
+                bpm = 1;
+                _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+                txtBxTempo.Text = bpm.ToString();
+                MessageBox.Show("Bpm can't be '0': " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);               
+            }
+            catch (Exception ex)
+            {
+                bpm = 1;
+                _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
+                txtBxTempo.Text = bpm.ToString();
+                MessageBox.Show("Bpm is no valid value: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void FormulaMsWait(int bpm)
@@ -409,13 +448,13 @@ namespace DrumMachine_Project_OOP
                 //100bpm --> 400noten/min --> 6.67noten/s
                 //t = (1/6.67)*1000 ms
             }
-            catch (DivideByZeroException ex)
+            catch (DivideByZeroException)
             {
-                MessageBox.Show("Bpm kan geen '0' zijn: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw new DivideByZeroException();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Bpm is geen geldige waarde: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw new Exception();
             }
         }
 
