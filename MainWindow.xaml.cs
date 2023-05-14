@@ -34,12 +34,14 @@ namespace DrumMachine_Project_OOP
         int[] hihatMem = new int[64];
         int[] snareMem = new int[64];
         int[] kickMem = new int[64];
+        int[] tomMem = new int[64];
         
         Crash _crash = new Crash();
         Hihat _hihat = new Hihat();
         Snare _snare = new Snare();
         Kick _kick = new Kick();
-        const int _amountInstruments = 4;
+        Tom _tom = new Tom();
+        const int _amountInstruments = 5;
 
         int _i = 0;
         DispatcherTimer _dispatcherTimer;
@@ -68,7 +70,8 @@ namespace DrumMachine_Project_OOP
             _crash.LoadSoundsToComboBox(cmbBoxCrash);
             _hihat.LoadSoundsToComboBox(cmbBoxHihat);
             _snare.LoadSoundsToComboBox(cmbBoxSnare);
-            _kick.LoadSoundsToComboBox(cmbBoxKick);            
+            _kick.LoadSoundsToComboBox(cmbBoxKick);
+            _tom.LoadSoundsToComboBox(cmbBoxTom);
 
 
             antiBtnList.AddRange(new[]
@@ -139,10 +142,14 @@ namespace DrumMachine_Project_OOP
             if (kickMem[_i] == 1)
                 _kick.Play();
 
+            if (tomMem[_i] == 1)
+                _tom.Play();
+
             HidePolygon(_i);
             ShowPolygon(_i);
 
             _i++;
+
             if (_i == crashMem.Length)
                 _i = 0;
             if (_i == 1)
@@ -190,7 +197,8 @@ namespace DrumMachine_Project_OOP
             if ((crashMem != null && !crashMem.All(val => val == 0)) ||
                 (hihatMem != null && !hihatMem.All(val => val == 0)) ||
                 (snareMem != null && !snareMem.All(val => val == 0)) ||
-                (kickMem != null && !kickMem.All(val => val == 0)))
+                (kickMem != null && !kickMem.All(val => val == 0)) ||
+                (tomMem != null && !tomMem.All(val => val == 0)))
             {
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to delete the existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel)
@@ -237,13 +245,14 @@ namespace DrumMachine_Project_OOP
                 ValidateArray(jsonArray[1], "hihatMem");
                 ValidateArray(jsonArray[2], "snareMem");
                 ValidateArray(jsonArray[3], "kickMem");
+                ValidateArray(jsonArray[4], "tomMem");
 
                 crashMem = jsonArray[0]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'crashMem' is not in the right format.");
                 hihatMem = jsonArray[1]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'hihatMem' is not in the right format.");
                 snareMem = jsonArray[2]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'snareMem' is not in the right format.");
                 kickMem = jsonArray[3]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'kickMem' is not in the right format.");
+                tomMem = jsonArray[4]?.ToObject<int[]>() ?? throw new InvalidOperationException("Array 'tomMem' is not in the right format.");
                 DebugArrays();
-                // Proceed with further processing or operations on the arrays
             }
             catch (JsonException ex)
             {
@@ -298,7 +307,7 @@ namespace DrumMachine_Project_OOP
             {
                 if (snareMem[i] == 1)
                 {
-                    Button button = soundBtnList[crashMem.Length*2 + i];
+                    Button button = soundBtnList[crashMem.Length * 2 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -306,7 +315,15 @@ namespace DrumMachine_Project_OOP
             {
                 if (kickMem[i] == 1)
                 {
-                    Button button = soundBtnList[crashMem.Length*3 + i];
+                    Button button = soundBtnList[crashMem.Length * 3 + i];
+                    button.Background = Brushes.LightSkyBlue;
+                }
+            }
+            for (int i = 0; i < tomMem.Length; i++)
+            {
+                if (tomMem[i] == 1)
+                {
+                    Button button = soundBtnList[crashMem.Length * 4 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -334,6 +351,7 @@ namespace DrumMachine_Project_OOP
             _hihat.Stop();
             _snare.Stop();
             _kick.Stop();
+            _tom.Stop();
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)       //Verwijder inhoud array's + knoppen naar originele kleur
@@ -345,7 +363,8 @@ namespace DrumMachine_Project_OOP
             if ((crashMem != null && !crashMem.All(val => val == 0)) ||
                 (hihatMem != null && !hihatMem.All(val => val == 0)) ||
                 (snareMem != null && !snareMem.All(val => val == 0)) ||
-                (kickMem != null && !kickMem.All(val => val == 0)))
+                (kickMem != null && !kickMem.All(val => val == 0)) ||
+                (tomMem != null && !tomMem.All(val => val == 0)))
             {
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to delete existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel)
@@ -363,6 +382,8 @@ namespace DrumMachine_Project_OOP
                 Array.Clear(snareMem, 0, snareMem.Length);
             if (kickMem != null)
                 Array.Clear(kickMem, 0, kickMem.Length);
+            if (tomMem != null)
+                Array.Clear(tomMem, 0, tomMem.Length);
             Debug.WriteLine("Arrays cleared");
 
             foreach (Button button in soundBtnList)
@@ -387,7 +408,8 @@ namespace DrumMachine_Project_OOP
             if ((crashMem == null || crashMem.All(val => val == 0)) &&
                 (hihatMem == null || hihatMem.All(val => val == 0)) &&
                 (snareMem == null || snareMem.All(val => val == 0)) &&
-                (kickMem == null || kickMem.All(val => val == 0)))
+                (kickMem == null || kickMem.All(val => val == 0)) &&
+                (tomMem == null || tomMem.All(val => val == 0)))
             {
                 MessageBoxResult result = MessageBox.Show("Are you sure you want to save a empty groove?", "Empty groove", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Cancel)
@@ -405,7 +427,7 @@ namespace DrumMachine_Project_OOP
             if (saveFileDialog.ShowDialog() == true)
             {
                 string filename = saveFileDialog.FileName;
-                SaveArraysToJson(new object[] { crashMem!, hihatMem!, snareMem!, kickMem! }/*, bpm*/, filename);
+                SaveArraysToJson(new object[] { crashMem!, hihatMem!, snareMem!, kickMem!, tomMem! }, filename);
                 Debug.WriteLine("Arrays succesfully saved\n");
                 MessageBox.Show("Groove successfully saved!", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -545,6 +567,16 @@ namespace DrumMachine_Project_OOP
             }
         }
 
+        private void cmbBoxTom_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxTom.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxTom.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Tom", selectedSoundFileName + ".wav");
+                _tom.SoundFile = selectedSoundFilePath;
+            }
+        }
+
 
         //SoundBtns --> array + achtergroundkleur van knoppen
         private void btnCrash_Click(object sender, RoutedEventArgs e)
@@ -631,6 +663,26 @@ namespace DrumMachine_Project_OOP
             //Debug.WriteLine(index + "[" + kick[index].ToString() + "]");
         }
 
+        private void btnTom_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            int index = int.Parse(button.Name.Substring(6)) - 1;    // extract index from button name //is '6', want tom is 3 letters, al de rest 5
+
+            if (tomMem[index] == 0)
+            {
+                button.Background = new SolidColorBrush(Colors.LightSkyBlue);
+                tomMem[index] = 1;
+            }
+            else
+            {
+                if (index == 0 || index % 4 == 0)
+                    button.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xA9, 0xA9, 0xA9));
+                else
+                    button.Background = new SolidColorBrush(Colors.LightGray);
+                tomMem[index] = 0;
+            }
+            //Debug.WriteLine(index + "[" + tom[index].ToString() + "]");
+        }
 
         private void DebugArrays()
         {
@@ -677,6 +729,16 @@ namespace DrumMachine_Project_OOP
                 counter++;
             }
             Debug.Write("   }\n");
-        }        
+            counter = 0;
+            Debug.Write("tomMem[]: {  ");
+            foreach (var item in tomMem)
+            {
+                Debug.Write(item.ToString());
+                if (counter != lastIndex)
+                { Debug.Write(", "); }
+                counter++;
+            }
+            Debug.Write("   }\n");
+        }
     }
 }
