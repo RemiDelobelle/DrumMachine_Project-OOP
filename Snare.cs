@@ -37,7 +37,7 @@ namespace DrumMachine_Project_OOP
                 instrument = new AudioFileReader(soundFilePath);
                 soundPlayer.Init(instrument);
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 MessageBox.Show("Snare-Sound file not found: " + soundFilePath, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -46,7 +46,6 @@ namespace DrumMachine_Project_OOP
                 MessageBox.Show("An error occurred while loading the sound file:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         public void LoadSoundsToComboBox(ComboBox comboBox)
         {

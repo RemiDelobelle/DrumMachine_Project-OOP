@@ -38,7 +38,7 @@ namespace DrumMachine_Project_OOP
                 instrument = new AudioFileReader(soundFilePath);
                 soundPlayer.Init(instrument);
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 MessageBox.Show("Hihat-Sound file not found: " + soundFilePath, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }

@@ -27,23 +27,6 @@ namespace DrumMachine_Project_OOP
         {
         }
 
-        //private void SetSoundFile(string soundfile)
-        //{
-        //    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        //    string soundFilePath = Path.Combine(baseDirectory, "Sounds", "Crash", soundfile);
-
-        //    if (File.Exists(soundFilePath))
-        //    {
-        //        instrument = new AudioFileReader(soundFilePath);
-        //        soundPlayer.Init(instrument);
-        //    }
-        //    else
-        //    {
-        //        // Handle the case where the sound file does not exist
-        //        MessageBox.Show("Sound file not found: " + soundFilePath, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //}
-
         private void SetSoundFile(string soundfile)
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -54,7 +37,7 @@ namespace DrumMachine_Project_OOP
                 instrument = new AudioFileReader(soundFilePath);
                 soundPlayer.Init(instrument);
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 MessageBox.Show("Crash-Sound file not found: " + soundFilePath, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -63,7 +46,6 @@ namespace DrumMachine_Project_OOP
                 MessageBox.Show("An error occurred while loading the sound file:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         public void LoadSoundsToComboBox(ComboBox comboBox)
         {

@@ -392,11 +392,11 @@ namespace DrumMachine_Project_OOP
         //}
 
 
-        private void txtBxTempo_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void txtBxTempo_PreviewTextInput(object sender, TextCompositionEventArgs e) //Enkel getallen in textbox
         {
             if (!int.TryParse(e.Text, out int numericValue))
             {
-                e.Handled = true; // Prevent the invalid text from being entered
+                e.Handled = true;
             }
         }
 
@@ -440,12 +440,12 @@ namespace DrumMachine_Project_OOP
                 _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
                 txtBxTempo.Text = bpm.ToString();
             }
-            catch (DivideByZeroException ex)
+            catch (DivideByZeroException)
             {
                 bpm = 1;
                 _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
                 txtBxTempo.Text = bpm.ToString();
-                MessageBox.Show("Bpm can't be '0': " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);               
+                MessageBox.Show("Bpm can't be '0': ", "Error", MessageBoxButton.OK, MessageBoxImage.Error);               
             }
             catch (Exception ex)
             {

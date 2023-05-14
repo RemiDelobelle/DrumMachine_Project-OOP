@@ -14,12 +14,6 @@ namespace DrumMachine_Project_OOP
     {
         protected WaveStream instrument;
         protected WaveOut soundPlayer;
-        public Instrument(string soundfile)
-        {
-            instrument = new AudioFileReader(soundfile);
-            soundPlayer = new WaveOut();
-            soundPlayer.Init(instrument);
-        }
         public Instrument()
         {
             instrument = null;
