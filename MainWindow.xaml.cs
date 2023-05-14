@@ -34,11 +34,15 @@ namespace DrumMachine_Project_OOP
         int[] hihatMem = new int[16];
         int[] snareMem = new int[16];
         int[] kickMem = new int[16];
-
-        Instrument _crash = new Instrument("Crash.Wav");
-        Instrument _hihat = new Instrument("Hihat.wav");
-        Instrument _snare = new Instrument("Snare.Wav");
-        Instrument _kick = new Instrument("Kick.Wav");
+        
+        Crash _crash = new Crash();
+        Hihat _hihat = new Hihat();
+        Snare _snare = new Snare();
+        Kick _kick = new Kick();
+        //Instrument _crash = new Instrument("Crash.Wav");
+        //Instrument _hihat = new Instrument("Hihat.wav");
+        //Instrument _snare = new Instrument("Snare.Wav");
+        //Instrument _kick = new Instrument("Kick.Wav");
         const int _amountInstruments = 4;
 
         int _i = 0;
@@ -79,7 +83,13 @@ namespace DrumMachine_Project_OOP
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {           
+        {
+            _crash.LoadSoundsToComboBox(cmbBoxCrash);
+            _hihat.LoadSoundsToComboBox(cmbBoxHihat);
+            _snare.LoadSoundsToComboBox(cmbBoxSnare);
+            _kick.LoadSoundsToComboBox(cmbBoxKick);            
+
+
             antiBtnList.AddRange(new[]
             {
                 btnChoose,
@@ -108,7 +118,6 @@ namespace DrumMachine_Project_OOP
             for (int i = 0; i < count; i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                //if (child is Button button && button.Name != "btnPlay" && button.Name != "btnStop" && button.Name != "btnClear")
                 if (child is Button button && !antiBtnList.Contains(button))
                 {
                     soundBtnList.Add(button);
@@ -273,7 +282,15 @@ namespace DrumMachine_Project_OOP
         {
             _dispatcherTimer.Stop();
             _i = 0;
+            StopSounds();
             Debug.WriteLine("btnStop clicked\n");
+        }
+        private void StopSounds()
+        {
+            _crash.Stop();
+            _hihat.Stop();
+            _snare.Stop();
+            _kick.Stop();
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)       //Verwijder inhoud array's + knoppen naar originele kleur
@@ -296,7 +313,7 @@ namespace DrumMachine_Project_OOP
             }
 
             // Find all the buttons in the visual tree except for the specific ones
-            //FindButtons(this, soundBtnList);
+            /*FindButtons(this, soundBtnList);*/
             if (crashMem != null)
                 Array.Clear(crashMem, 0, crashMem.Length);
             if (hihatMem != null)
@@ -590,6 +607,46 @@ namespace DrumMachine_Project_OOP
                 counter++;
             }
             Debug.Write("   }\n");
+        }
+
+        private void cmbBoxCrash_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxCrash.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxCrash.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Crash", selectedSoundFileName + ".wav");
+                _crash.SoundFile = selectedSoundFilePath;
+            }
+        }
+
+        private void cmbBoxHihat_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxHihat.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxHihat.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Hihat", selectedSoundFileName + ".wav");
+                _hihat.SoundFile = selectedSoundFilePath;
+            }
+        }
+
+        private void cmbBoxSnare_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxSnare.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxSnare.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Snare", selectedSoundFileName + ".wav");
+                _snare.SoundFile = selectedSoundFilePath;
+            }
+        }
+
+        private void cmbBoxKick_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxKick.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxKick.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Kick", selectedSoundFileName + ".wav");
+                _kick.SoundFile = selectedSoundFilePath;
+            }
         }
     }
 }

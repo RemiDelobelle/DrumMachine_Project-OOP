@@ -53,7 +53,7 @@
                 <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="150"></ColumnDefinition>
                 <ColumnDefinition Width="5"></ColumnDefinition>
                 <ColumnDefinition Width="30"></ColumnDefinition>
                 <ColumnDefinition Width="30"></ColumnDefinition>
@@ -111,7 +111,8 @@
             <Label Name="lblDiv4" Content="4" Grid.Row="0" Grid.Column="17" FontSize="15" FontWeight="Bold" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
             <Rectangle Grid.Row="0" Grid.Column="17" Grid.ColumnSpan="4" Stroke="Black" StrokeThickness="1" Fill="Transparent"></Rectangle>
 
-            <Label Name="lblCrash" Content="Crash" Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+            <!--<Label Name="lblCrash" Content="Crash" Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>-->
+            <ComboBox Name="cmbBoxCrash" Grid.Row="1" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxCrash_SelectionChanged"></ComboBox>
             <Button x:Name="btnCrash1" Grid.Row="1" Grid.Column="2" Margin="3" Background="#A9A9A9" Click="btnCrash_Click"></Button>
             <Button x:Name="btnCrash2" Grid.Row="1" Grid.Column="3" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
             <Button x:Name="btnCrash3" Grid.Row="1" Grid.Column="4" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
@@ -145,7 +146,8 @@
             <Button x:Name="btnCrash31" Grid.Row="1" Grid.Column="39" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>
             <Button x:Name="btnCrash32" Grid.Row="1" Grid.Column="40" Margin="3" Background="lightGray" Click="btnCrash_Click"></Button>-->
 
-            <Label Name="lblHihat" Content="Hi-Hat" Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+            <!--<Label Name="lblHihat" Content="Hi-Hat" Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>-->
+            <ComboBox Name="cmbBoxHihat" Grid.Row="2" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxHihat_SelectionChanged"></ComboBox>
             <Button x:Name="btnHihat1" Grid.Row="2" Grid.Column="2" Margin="3" Background="#A9A9A9" Click="btnHihat_Click"></Button>
             <Button x:Name="btnHihat2" Grid.Row="2" Grid.Column="3" Margin="3" Background="lightGray" Click="btnHihat_Click"></Button>
             <Button x:Name="btnHihat3" Grid.Row="2" Grid.Column="4" Margin="3" Background="lightGray" Click="btnHihat_Click"></Button>
@@ -163,7 +165,8 @@
             <Button x:Name="btnHihat15" Grid.Row="2" Grid.Column="19" Margin="3" Background="lightGray" Click="btnHihat_Click"></Button>
             <Button x:Name="btnHihat16" Grid.Row="2" Grid.Column="20" Margin="3" Background="lightGray" Click="btnHihat_Click"></Button>
 
-            <Label Name="lblSnare" Content="Snare" Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+            <!--<Label Name="lblSnare" Content="Snare" Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>-->
+            <ComboBox Name="cmbBoxSnare" Grid.Row="3" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxSnare_SelectionChanged"></ComboBox>
             <Button x:Name="btnSnare1" Grid.Row="3" Grid.Column="2" Margin="3" Background="#A9A9A9" Click="btnSnare_Click"></Button>
             <Button x:Name="btnSnare2" Grid.Row="3" Grid.Column="3" Margin="3" Background="lightGray" Click="btnSnare_Click"></Button>
             <Button x:Name="btnSnare3" Grid.Row="3" Grid.Column="4" Margin="3" Background="lightGray" Click="btnSnare_Click"></Button>
@@ -181,7 +184,8 @@
             <Button x:Name="btnSnare15" Grid.Row="3" Grid.Column="19" Margin="3" Background="lightGray" Click="btnSnare_Click"></Button>
             <Button x:Name="btnSnare16" Grid.Row="3" Grid.Column="20" Margin="3" Background="lightGray" Click="btnSnare_Click"></Button>
 
-            <Label Name="lblKick" Content="Kick" Grid.Row="4" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+            <!--<Label Name="lblKick" Content="Kick" Grid.Row="4" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>-->
+            <ComboBox Name="cmbBoxKick" Grid.Row="4" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxKick_SelectionChanged"></ComboBox>
             <Button x:Name="btnKick1" Grid.Row="4" Grid.Column="2" Margin="3" Background="#A9A9A9" Click="btnKick_Click"></Button>
             <Button x:Name="btnKick2" Grid.Row="4" Grid.Column="3" Margin="3" Background="lightGray" Click="btnKick_Click"></Button>
             <Button x:Name="btnKick3" Grid.Row="4" Grid.Column="4" Margin="3" Background="lightGray" Click="btnKick_Click"></Button>
