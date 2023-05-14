@@ -388,7 +388,7 @@
                 <Button x:Name="btnSnare63" Grid.Row="3" Grid.Column="79" Margin="3" Background="lightGray" Click="btnSnare_Click"></Button>
                 <Button x:Name="btnSnare67" Grid.Row="3" Grid.Column="80" Margin="3" Background="lightGray" Click="btnSnare_Click"></Button>
 
-                <ComboBox Name="cmbBoxTom" Grid.Row="5" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxTom_SelectionChanged"></ComboBox>
+                <ComboBox Name="cmbBoxTom" Grid.Row="4" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxTom_SelectionChanged"></ComboBox>
                 <Button x:Name="btnTom1" Grid.Row="4" Grid.Column="2" Margin="3" Background="#A9A9A9" Click="btnTom_Click"></Button>
                 <Button x:Name="btnTom2" Grid.Row="4" Grid.Column="3" Margin="3" Background="LightGray" Click="btnTom_Click"></Button>
                 <Button x:Name="btnTom3" Grid.Row="4" Grid.Column="4" Margin="3" Background="LightGray" Click="btnTom_Click"></Button>
@@ -454,7 +454,7 @@
                 <Button x:Name="btnTom63" Grid.Row="4" Grid.Column="79" Margin="3" Background="LightGray" Click="btnTom_Click"></Button>
                 <Button x:Name="btnTom64" Grid.Row="4" Grid.Column="80" Margin="3" Background="LightGray" Click="btnTom_Click"></Button>
 
-                <ComboBox Name="cmbBoxKick" Grid.Row="4" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxKick_SelectionChanged"></ComboBox>
+                <ComboBox Name="cmbBoxKick" Grid.Row="5" Grid.Column="0" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="cmbBoxKick_SelectionChanged"></ComboBox>
                 <Button x:Name="btnKick1" Grid.Row="5" Grid.Column="2" Margin="3" Background="#A9A9A9" Click="btnKick_Click"></Button>
                 <Button x:Name="btnKick2" Grid.Row="5" Grid.Column="3" Margin="3" Background="lightGray" Click="btnKick_Click"></Button>
                 <Button x:Name="btnKick3" Grid.Row="5" Grid.Column="4" Margin="3" Background="lightGray" Click="btnKick_Click"></Button>

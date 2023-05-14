@@ -582,7 +582,7 @@ namespace DrumMachine_Project_OOP
         private void btnCrash_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-            int index = int.Parse(button.Name.Substring(8)) - 1; // extract index from button name
+            int index = int.Parse(button.Name.Substring(8)) - 1;    // haalt index uit button name
 
             if (crashMem[index] == 0)
             {
@@ -603,7 +603,7 @@ namespace DrumMachine_Project_OOP
         private void btnHihat_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-            int index = int.Parse(button.Name.Substring(8)) - 1; // extract index from button name
+            int index = int.Parse(button.Name.Substring(8)) - 1;    // haalt index uit button name
 
             if (hihatMem[index] == 0)
             {
@@ -624,7 +624,7 @@ namespace DrumMachine_Project_OOP
         private void btnSnare_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-            int index = int.Parse(button.Name.Substring(8)) - 1; // extract index from button name
+            int index = int.Parse(button.Name.Substring(8)) - 1;    // haalt index uit button name
 
             if (snareMem[index] == 0)
             {
@@ -645,7 +645,7 @@ namespace DrumMachine_Project_OOP
         private void btnKick_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-            int index = int.Parse(button.Name.Substring(7)) - 1;    // extract index from button name //is '7', want kick is 4 letters, al de rest 5
+            int index = int.Parse(button.Name.Substring(7)) - 1;    // haalt index uit button name //is '7', want kick is 4 letters, al de rest 5
 
             if (kickMem[index] == 0)
             {
@@ -666,7 +666,7 @@ namespace DrumMachine_Project_OOP
         private void btnTom_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-            int index = int.Parse(button.Name.Substring(6)) - 1;    // extract index from button name //is '6', want tom is 3 letters, al de rest 5
+            int index = int.Parse(button.Name.Substring(6)) - 1;    //haalt index uit button name //is '6', want tom is 3 letters, al de rest 5
 
             if (tomMem[index] == 0)
             {
