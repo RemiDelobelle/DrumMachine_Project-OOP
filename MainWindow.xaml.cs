@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Media;
 using System.Linq;
-//using DrumMachine;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using System.Text.Json;
@@ -21,7 +20,8 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
-//using Newtonsoft.Json;
+using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace DrumMachine_Project_OOP
 {
@@ -30,25 +30,23 @@ namespace DrumMachine_Project_OOP
     /// </summary>
     public partial class MainWindow : Window
     {
-        int[] crashMem = new int[16];
-        int[] hihatMem = new int[16];
-        int[] snareMem = new int[16];
-        int[] kickMem = new int[16];
+        int[] crashMem = new int[64];
+        int[] hihatMem = new int[64];
+        int[] snareMem = new int[64];
+        int[] kickMem = new int[64];
         
         Crash _crash = new Crash();
         Hihat _hihat = new Hihat();
         Snare _snare = new Snare();
         Kick _kick = new Kick();
-        //Instrument _crash = new Instrument("Crash.Wav");
-        //Instrument _hihat = new Instrument("Hihat.wav");
-        //Instrument _snare = new Instrument("Snare.Wav");
-        //Instrument _kick = new Instrument("Kick.Wav");
         const int _amountInstruments = 4;
 
         int _i = 0;
         DispatcherTimer _dispatcherTimer;
         int bpm = 100;
         int msWait = 150; //150ms tussen elke noot
+
+        const int totalPolygonCount = 64;
 
         List<Button> soundBtnList = new List<Button>(); //Soudnbtns list
         List<Button> antiBtnList = new List<Button>();  //De rest
@@ -61,29 +59,12 @@ namespace DrumMachine_Project_OOP
             _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
-        }
-
-        private void _dispatcherTimer_Tick(object? sender, EventArgs e)     //loop sounds
-        {
-            if (crashMem[_i] == 1)
-                _crash.Play();
-
-            if (hihatMem[_i] == 1)
-                _hihat.Play();
-
-            if (snareMem[_i] == 1)
-                _snare.Play();
-
-            if (kickMem[_i] == 1)
-                _kick.Play();
-             
-            _i++;
-            if(_i == 16)
-                _i = 0;   
-        }
+        }        
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            HideAllPolygons();
+
             _crash.LoadSoundsToComboBox(cmbBoxCrash);
             _hihat.LoadSoundsToComboBox(cmbBoxHihat);
             _snare.LoadSoundsToComboBox(cmbBoxSnare);
@@ -112,6 +93,7 @@ namespace DrumMachine_Project_OOP
             Debug.WriteLine("");
             DebugArrays();
         }
+
         private void FindButtons(DependencyObject parent, List<Button> soundBtnList)    //Add all soundBtns aan de list
         {
             int count = VisualTreeHelper.GetChildrenCount(parent);
@@ -126,6 +108,66 @@ namespace DrumMachine_Project_OOP
                 {
                     FindButtons(child, soundBtnList);
                 }
+            }
+        }
+
+        private void HideAllPolygons()
+        {
+            // Loop through all the polygons and hide them
+            for (int i = 1; i <= totalPolygonCount; i++)
+            {
+                string polygonName = "pg" + i;
+                Polygon? polygon = FindName(polygonName) as Polygon;
+                if (polygon != null)
+                {
+                    polygon.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void _dispatcherTimer_Tick(object? sender, EventArgs e)     //loop sounds
+        {
+            if (crashMem[_i] == 1)
+                _crash.Play();
+
+            if (hihatMem[_i] == 1)
+                _hihat.Play();
+
+            if (snareMem[_i] == 1)
+                _snare.Play();
+
+            if (kickMem[_i] == 1)
+                _kick.Play();
+
+            HidePolygon(_i);
+            ShowPolygon(_i);
+
+            _i++;
+            if (_i == crashMem.Length)
+                _i = 0;
+            if (_i == 1)
+                pg64.Visibility = Visibility.Collapsed;
+        }
+
+        private void HidePolygon(int index)
+        {
+            // Hide the polygon with the specified index
+            string polygonName = "pg" + (index);
+            Polygon? polygon = FindName(polygonName) as Polygon;
+            if (polygon != null)
+            {
+                polygon.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ShowPolygon(int index)
+        {
+            // Show the polygon with the specified index
+            string polygonName = "pg" + (index + 1);
+            Polygon? polygon = FindName(polygonName) as Polygon;
+            if (polygon != null)
+            {
+                polygon.Visibility = Visibility.Visible;
             }
         }
 
@@ -166,13 +208,13 @@ namespace DrumMachine_Project_OOP
                 ConvertJsonToArrays(filePath);
                 VisualizerSoundBtns();
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
-                MessageBox.Show("The selected file does not exist." + ex.Message, "File Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("The selected file does not exist.", "File Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while processing the file: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred while loading and processing the file: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -221,7 +263,7 @@ namespace DrumMachine_Project_OOP
         {
             try
             {
-                if (token == null || token.Type != JTokenType.Array || token.Count() != 16 ||
+                if (token == null || token.Type != JTokenType.Array || token.Count() != 64 ||                                                                   
                     !token.Values().All(val => val.Type == JTokenType.Integer && (int)val == 0 || (int)val == 1))
                 {
                     throw new InvalidOperationException($"Array '{arrayName}' is not in the right format.");
@@ -234,7 +276,7 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void VisualizerSoundBtns()
+        private void VisualizerSoundBtns()                                                              
         {
             for (int i = 0; i < crashMem.Length; i++)
             {
@@ -248,7 +290,7 @@ namespace DrumMachine_Project_OOP
             {
                 if (hihatMem[i] == 1)
                 {
-                    Button button = soundBtnList[16 + i];
+                    Button button = soundBtnList[crashMem.Length + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -256,7 +298,7 @@ namespace DrumMachine_Project_OOP
             {
                 if (snareMem[i] == 1)
                 {
-                    Button button = soundBtnList[32 + i];
+                    Button button = soundBtnList[crashMem.Length*2 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -264,7 +306,7 @@ namespace DrumMachine_Project_OOP
             {
                 if (kickMem[i] == 1)
                 {
-                    Button button = soundBtnList[48 + i];
+                    Button button = soundBtnList[crashMem.Length*3 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
@@ -282,6 +324,7 @@ namespace DrumMachine_Project_OOP
         {
             _dispatcherTimer.Stop();
             _i = 0;
+            HideAllPolygons();
             StopSounds();
             Debug.WriteLine("btnStop clicked\n");
         }
@@ -312,8 +355,6 @@ namespace DrumMachine_Project_OOP
                 }
             }
 
-            // Find all the buttons in the visual tree except for the specific ones
-            /*FindButtons(this, soundBtnList);*/
             if (crashMem != null)
                 Array.Clear(crashMem, 0, crashMem.Length);
             if (hihatMem != null)
@@ -378,19 +419,6 @@ namespace DrumMachine_Project_OOP
             File.WriteAllText(filename, json);
             Console.WriteLine("JSON data saved to file: " + filename);
         }
-        //static void SaveArraysToJson(int[][] arrays/*, int bpm*/, string filename)
-        //{
-        //    GrooveData groovedata = new GrooveData
-        //    {
-        //        //Bpm = bpm,
-        //        Arrays = arrays
-        //    };
-
-        //    string json = JsonSerializer.Serialize(groovedata, new JsonSerializerOptions { WriteIndented = true });
-        //    File.WriteAllText(filename, json);
-        //    Console.WriteLine("JSON data saved to file: " + filename);
-        //}
-
 
         private void txtBxTempo_PreviewTextInput(object sender, TextCompositionEventArgs e) //Enkel getallen in textbox
         {
@@ -458,7 +486,7 @@ namespace DrumMachine_Project_OOP
 
         private void FormulaMsWait(int bpm)
         {
-            try                                                         // FIX DIT NOG NIET AF WERKT NOG NIET HELEMAAL
+            try
             {
                 double msWaitDouble = (60 * 1000) / (bpm * 4);
                 msWait = (int)Math.Round(msWaitDouble);
@@ -472,6 +500,48 @@ namespace DrumMachine_Project_OOP
             catch (Exception)
             {
                 throw new Exception();
+            }
+        }
+        
+
+        //Change instrument
+        private void cmbBoxCrash_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxCrash.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxCrash.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Crash", selectedSoundFileName + ".wav");
+                _crash.SoundFile = selectedSoundFilePath;
+            }
+        }
+
+        private void cmbBoxHihat_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxHihat.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxHihat.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Hihat", selectedSoundFileName + ".wav");
+                _hihat.SoundFile = selectedSoundFilePath;
+            }
+        }
+
+        private void cmbBoxSnare_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxSnare.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxSnare.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Snare", selectedSoundFileName + ".wav");
+                _snare.SoundFile = selectedSoundFilePath;
+            }
+        }
+
+        private void cmbBoxKick_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbBoxKick.SelectedItem != null)
+            {
+                string? selectedSoundFileName = cmbBoxKick.SelectedItem.ToString();
+                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Kick", selectedSoundFileName + ".wav");
+                _kick.SoundFile = selectedSoundFilePath;
             }
         }
 
@@ -489,7 +559,7 @@ namespace DrumMachine_Project_OOP
             }
             else
             {
-                if ((index == 0) || (index == 4) || (index == 8) || (index == 12))
+                if (index == 0 || index%4 == 0)
                     button.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xA9, 0xA9, 0xA9));
                 else
                     button.Background = new SolidColorBrush(Colors.LightGray);
@@ -510,7 +580,7 @@ namespace DrumMachine_Project_OOP
             }
             else
             {
-                if ((index == 0) || (index == 4) || (index == 8) || (index == 12))
+                if (index == 0 || index % 4 == 0)
                     button.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xA9, 0xA9, 0xA9));
                 else
                     button.Background = new SolidColorBrush(Colors.LightGray);
@@ -531,7 +601,7 @@ namespace DrumMachine_Project_OOP
             }
             else
             {
-                if ((index == 0) || (index == 4) || (index == 8) || (index == 12))
+                if (index == 0 || index % 4 == 0)
                     button.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xA9, 0xA9, 0xA9));
                 else
                     button.Background = new SolidColorBrush(Colors.LightGray);
@@ -543,7 +613,7 @@ namespace DrumMachine_Project_OOP
         private void btnKick_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-            int index = int.Parse(button.Name.Substring(7)) - 1; // extract index from button name //is '7', want kick is 4 letters, al de rest 5
+            int index = int.Parse(button.Name.Substring(7)) - 1;    // extract index from button name //is '7', want kick is 4 letters, al de rest 5
 
             if (kickMem[index] == 0)
             {
@@ -552,7 +622,7 @@ namespace DrumMachine_Project_OOP
             }
             else
             {
-                if ((index == 0) || (index == 4) || (index == 8) || (index == 12))
+                if (index == 0 || index % 4 == 0)
                     button.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xA9, 0xA9, 0xA9));
                 else
                     button.Background = new SolidColorBrush(Colors.LightGray);
@@ -607,46 +677,6 @@ namespace DrumMachine_Project_OOP
                 counter++;
             }
             Debug.Write("   }\n");
-        }
-
-        private void cmbBoxCrash_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cmbBoxCrash.SelectedItem != null)
-            {
-                string? selectedSoundFileName = cmbBoxCrash.SelectedItem.ToString();
-                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Crash", selectedSoundFileName + ".wav");
-                _crash.SoundFile = selectedSoundFilePath;
-            }
-        }
-
-        private void cmbBoxHihat_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cmbBoxHihat.SelectedItem != null)
-            {
-                string? selectedSoundFileName = cmbBoxHihat.SelectedItem.ToString();
-                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Hihat", selectedSoundFileName + ".wav");
-                _hihat.SoundFile = selectedSoundFilePath;
-            }
-        }
-
-        private void cmbBoxSnare_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cmbBoxSnare.SelectedItem != null)
-            {
-                string? selectedSoundFileName = cmbBoxSnare.SelectedItem.ToString();
-                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Snare", selectedSoundFileName + ".wav");
-                _snare.SoundFile = selectedSoundFilePath;
-            }
-        }
-
-        private void cmbBoxKick_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cmbBoxKick.SelectedItem != null)
-            {
-                string? selectedSoundFileName = cmbBoxKick.SelectedItem.ToString();
-                string selectedSoundFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Kick", selectedSoundFileName + ".wav");
-                _kick.SoundFile = selectedSoundFilePath;
-            }
-        }
+        }        
     }
 }
