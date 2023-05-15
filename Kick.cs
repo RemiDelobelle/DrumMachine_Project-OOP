@@ -48,7 +48,6 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-
         public void LoadSoundsToComboBox(ComboBox comboBox)
         {
             string soundsFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", "Kick");

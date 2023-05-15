@@ -12,7 +12,6 @@ namespace DrumMachine_Project_OOP
 {
     internal class Hihat : Instrument
     {
-        //private const string folderName = "Hihat";
         private string soundFile;
         public string SoundFile
         {
@@ -47,7 +46,6 @@ namespace DrumMachine_Project_OOP
                 MessageBox.Show("An error occurred while loading the sound file:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         public void LoadSoundsToComboBox(ComboBox comboBox)
         {

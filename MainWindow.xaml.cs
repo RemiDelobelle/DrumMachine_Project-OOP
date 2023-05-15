@@ -61,7 +61,24 @@ namespace DrumMachine_Project_OOP
             _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(msWait);
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
-        }        
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if ((crashMem != null && !crashMem.All(val => val == 0)) ||
+                (hihatMem != null && !hihatMem.All(val => val == 0)) ||
+                (snareMem != null && !snareMem.All(val => val == 0)) ||
+                (kickMem != null && !kickMem.All(val => val == 0)) ||
+                (tomMem != null && !tomMem.All(val => val == 0)))
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete the existing groove?", "Delete groove?", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    Debug.WriteLine("Close Event canceled\n");
+                    e.Cancel = true;
+                }
+            }
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -114,9 +131,8 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void HideAllPolygons()
+        private void HideAllPolygons()          //Verbergt alle driehoeken
         {
-            // Loop through all the polygons and hide them
             for (int i = 1; i <= totalPolygonCount; i++)
             {
                 string polygonName = "pg" + i;
@@ -126,6 +142,7 @@ namespace DrumMachine_Project_OOP
                     polygon.Visibility = Visibility.Collapsed;
                 }
             }
+            Debug.WriteLine("Alle driehoeken verborgen\n");
         }
 
         private void _dispatcherTimer_Tick(object? sender, EventArgs e)     //loop sounds
@@ -156,9 +173,8 @@ namespace DrumMachine_Project_OOP
                 pg64.Visibility = Visibility.Collapsed;
         }
 
-        private void HidePolygon(int index)
+        private void HidePolygon(int index)         //Verberg driehoek
         {
-            // Hide the polygon with the specified index
             string polygonName = "pg" + (index);
             Polygon? polygon = FindName(polygonName) as Polygon;
             if (polygon != null)
@@ -167,9 +183,8 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void ShowPolygon(int index)
+        private void ShowPolygon(int index)         //Toon driehoek
         {
-            // Show the polygon with the specified index
             string polygonName = "pg" + (index + 1);
             Polygon? polygon = FindName(polygonName) as Polygon;
             if (polygon != null)
@@ -287,6 +302,8 @@ namespace DrumMachine_Project_OOP
 
         private void VisualizerSoundBtns()                                                              
         {
+            SoundBtnOriginalColor();
+
             for (int i = 0; i < crashMem.Length; i++)
             {
                 if(crashMem[i] == 1)
@@ -310,18 +327,18 @@ namespace DrumMachine_Project_OOP
                     Button button = soundBtnList[crashMem.Length * 2 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
-            }
-            for (int i = 0; i < kickMem.Length; i++)
+            }            
+            for (int i = 0; i < tomMem.Length; i++)
             {
-                if (kickMem[i] == 1)
+                if (tomMem[i] == 1)
                 {
                     Button button = soundBtnList[crashMem.Length * 3 + i];
                     button.Background = Brushes.LightSkyBlue;
                 }
             }
-            for (int i = 0; i < tomMem.Length; i++)
+            for (int i = 0; i < kickMem.Length; i++)
             {
-                if (tomMem[i] == 1)
+                if (kickMem[i] == 1)
                 {
                     Button button = soundBtnList[crashMem.Length * 4 + i];
                     button.Background = Brushes.LightSkyBlue;
@@ -359,6 +376,8 @@ namespace DrumMachine_Project_OOP
             Debug.WriteLine("btnClear clicked");
             _dispatcherTimer.Stop();
             _i = 0;
+            HideAllPolygons();
+            StopSounds();
 
             if ((crashMem != null && !crashMem.All(val => val == 0)) ||
                 (hihatMem != null && !hihatMem.All(val => val == 0)) ||
@@ -385,13 +404,18 @@ namespace DrumMachine_Project_OOP
             if (tomMem != null)
                 Array.Clear(tomMem, 0, tomMem.Length);
             Debug.WriteLine("Arrays cleared");
-
+            SoundBtnOriginalColor();          
+            Debug.WriteLine("Button colors restored\n");
+        }
+        
+        private void SoundBtnOriginalColor()
+        {
             foreach (Button button in soundBtnList)
             {
                 button.Background = Brushes.LightGray;
             }
 
-            for (int i = 0; i < soundBtnList.Count /*- 1*/; i += 4)
+            for (int i = 0; i < soundBtnList.Count; i += 4)
             {
                 if (i >= 0 && i < soundBtnList.Count)
                 {
@@ -399,8 +423,7 @@ namespace DrumMachine_Project_OOP
                     button.Background = new SolidColorBrush(Color.FromRgb(0xA9, 0xA9, 0xA9));
                 }
             }
-            Debug.WriteLine("Button colors restored\n");
-        }       
+        }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)        //Zet array's om in Json-file + opent venster om locatie te kiezen
         {
@@ -419,7 +442,6 @@ namespace DrumMachine_Project_OOP
                 }
             }
 
-            // Create a SaveFileDialog instance
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "JSON files (*.json)|*.json";
             saveFileDialog.Title = "Save Arrays to JSON";
@@ -433,16 +455,15 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        static void SaveArraysToJson(object[] arrays, string filename)
+        static void SaveArraysToJson(object[] arrays, string filename)          //Zet Json naar arrays
         {
-            // Convert the arrays to JSON format
             string json = JsonSerializer.Serialize(arrays, new JsonSerializerOptions { WriteIndented = true });
 
             File.WriteAllText(filename, json);
             Console.WriteLine("JSON data saved to file: " + filename);
         }
 
-        private void txtBxTempo_PreviewTextInput(object sender, TextCompositionEventArgs e) //Enkel getallen in textbox
+        private void txtBxTempo_PreviewTextInput(object sender, TextCompositionEventArgs e)     //Enkel getallen in textbox
         {
             if (!int.TryParse(e.Text, out int numericValue))
             {
@@ -450,7 +471,7 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void txtBxTempo_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtBxTempo_TextChanged(object sender, TextChangedEventArgs e)          //berekent msWait + verandert interval Timer
         {
             if (int.TryParse(txtBxTempo.Text, out int newValue))
             {
@@ -463,7 +484,7 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void btnTempoUp_Click(object sender, RoutedEventArgs e)
+        private void btnTempoUp_Click(object sender, RoutedEventArgs e)     //Verhoogt bpm met 1
         {
             try
             {
@@ -481,7 +502,7 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void btnTempoDown_Click(object sender, RoutedEventArgs e)
+        private void btnTempoDown_Click(object sender, RoutedEventArgs e)       //Verlaagt bpm met 1
         {
             try
             {
@@ -506,7 +527,7 @@ namespace DrumMachine_Project_OOP
             }
         }
 
-        private void FormulaMsWait(int bpm)
+        private void FormulaMsWait(int bpm)         //Berekent msWait via bpm
         {
             try
             {
@@ -684,7 +705,7 @@ namespace DrumMachine_Project_OOP
             //Debug.WriteLine(index + "[" + tom[index].ToString() + "]");
         }
 
-        private void DebugArrays()
+        private void DebugArrays()      //Schrijft alle array-values naar debugger
         {
             Debug.WriteLine("");
 

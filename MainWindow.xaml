@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DrumMachine_Project_OOP"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1920" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded">
+        Title="MainWindow" Height="450" Width="1920" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" Closing="Window_Closing">
     <!--<ScrollViewer>-->
     <Viewbox Name="vwBoxWindow" HorizontalAlignment="Left" VerticalAlignment="Top">
         <Grid>
